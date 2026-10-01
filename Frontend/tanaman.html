@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tanaman — Tanaman Digital</title>
+<link rel="icon" href="data:,">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/menu-panel.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Manrope', sans-serif; color:#eaf3ec; padding-bottom: 70px; background: #0f2119; }
+  .serif { font-family: 'Lora', serif; }
+
+  .sky {
+    position: relative; height: 45vh; min-height: 260px; overflow: hidden;
+    transition: background 1s ease;
+  }
+  .sky-pagi { background: linear-gradient(180deg, #7ec8e3 0%, #cfeaf5 100%); }
+  .sky-siang { background: linear-gradient(180deg, #3ea1e6 0%, #a9d9f5 100%); }
+  .sky-sore { background: linear-gradient(180deg, #f2954b 0%, #f7c98a 100%); }
+  .sky-malam { background: linear-gradient(180deg, #0b1524 0%, #0d1a15 100%); }
+
+  .status-pill {
+    position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+    background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.3);
+    padding: 7px 16px; border-radius: 999px; font-size: 12px; letter-spacing: .08em;
+    display: flex; align-items: center; gap: 8px; backdrop-filter: blur(6px); color:#fff;
+  }
+  .status-pill b { font-size: 13px; letter-spacing:0; }
+
+  .sun {
+    position: absolute; top: 40px; left: 50%; transform: translateX(-50%);
+    width: 56px; height: 56px; border-radius: 50%;
+    background: radial-gradient(circle, #fff6d0, #ffd45e);
+    box-shadow: 0 0 40px rgba(255,212,94,0.7);
+  }
+  .moon {
+    position: absolute; top: 50px; left: 50%; transform: translateX(-50%);
+    width: 34px; height: 34px; border-radius: 50%; background: #f4efe3;
+    box-shadow: inset 8px -3px 0 0 #0d1a15, 0 0 24px rgba(244,239,227,.35);
+    display: none;
+  }
+  .stars { position: absolute; inset: 0; display: none; }
+  .stars span { position: absolute; width: 2px; height: 2px; background: #cfe0da; border-radius: 50%; }
+
+  .plant-wrap { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; }
+  .pot { width: 56px; height: 16px; background: linear-gradient(180deg,#4a3221,#2c1c11); border-radius: 0 0 8px 8px; margin-top: -2px; }
+  .stem { width: 6px; height: 50px; background: linear-gradient(180deg,#57e08a,#2f9a58); border-radius: 3px; }
+  .leaf { width: 46px; height: 8px; background: linear-gradient(90deg,#57e08a,#2f9a58); border-radius: 6px; margin-top: -4px; }
+
+  .seed-mound { width: 22px; height: 12px; border-radius: 50% 50% 40% 40%; }
+  .leaf.small { width: 30px; }
+  .leaf-row { display: flex; gap: 6px; justify-content: center; }
+  .canopy { border-radius: 50%; margin-bottom: -6px; }
+  .canopy.medium { width: 64px; height: 54px; }
+  .canopy.large { width: 92px; height: 76px; }
+  .trunk { width: 12px; height: 34px; border-radius: 3px; }
+  .fruit { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: #e05c5c; }
+
+  .growth-panel {
+    background: linear-gradient(180deg,#152a20,#0f2119); border-radius: 22px 22px 0 0;
+    margin-top: -22px; padding: 20px 20px 12px; position: relative; z-index: 2;
+  }
+  .stage-track { display: flex; gap: 6px; margin-bottom: 10px; }
+  .stage-track .seg { flex: 1; height: 4px; border-radius: 3px; background: rgba(255,255,255,0.1); }
+  .stage-track .seg.done { background: #4ade80; }
+  .stage-labels { display: flex; justify-content: space-between; font-size: 10px; color: #9fb3a8; margin-bottom: 16px; }
+  .stage-labels .active { color: #4ade80; font-weight: 600; }
+
+  .growth-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .tahap-label { font-size: 10.5px; letter-spacing: .1em; color: #9fb3a8; text-transform: uppercase; }
+  .tahap-name { font-size: 20px; margin: 2px 0 4px; }
+  .tahap-desc { font-size: 12px; color: #9fb3a8; }
+  .nutrisi-col, .kesehatan-col { text-align: center; }
+  .kesehatan-col { text-align: right; }
+  .nutrisi-val { font-size: 24px; font-weight: 700; color: #4ade80; font-family: 'Lora', serif; }
+  .dots { display: flex; gap: 4px; margin: 6px 0 4px; justify-content: flex-end; }
+  .dot-on { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; display: inline-block; }
+  .dot-off { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.15); display: inline-block; }
+  .kesehatan-status { font-size: 11px; color: #4ade80; }
+
+  .progress-outer { margin-top: 16px; display: flex; align-items: center; gap: 10px; }
+  .progress-num { font-size: 11px; color: #9fb3a8; }
+  .progress-bar { flex: 1; height: 8px; background: rgba(255,255,255,0.08); border-radius: 99px; overflow: hidden; }
+  .progress-bar i { display: block; height: 100%; background: linear-gradient(90deg,#2f9a58,#4ade80); border-radius: 99px; width: 0%; transition: width .4s ease; }
+
+  .next-nutrisi {
+    margin-top: 14px; padding: 12px 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px; display: flex; justify-content: space-between; font-size: 12px; color: #9fb3a8;
+  }
+  .next-nutrisi b { color: #4ade80; font-weight: 600; }
+
+  .prayer-times-card {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; padding: 16px 18px; margin-top: 14px;
+  }
+  .prayer-times-list { display: flex; justify-content: space-between; gap: 4px; }
+  .prayer-time-item { text-align: center; flex: 1; padding: 4px 0; }
+  .prayer-time-item.active { background: rgba(74,222,128,0.12); border-radius: 10px; }
+  .prayer-time-name { font-size: 10.5px; color: #9fb3a8; text-transform: uppercase; letter-spacing: .04em; }
+  .prayer-time-value { font-size: 13px; font-weight: 700; margin-top: 3px; }
+  .prayer-time-item.active .prayer-time-value { color: #4ade80; }
+
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15,33,25,0.97); backdrop-filter: blur(8px);
+    display: flex; justify-content: space-around; align-items: center; padding: 10px 6px; z-index: 40;
+  }
+  .nav-btn { background: none; border: none; color: #9fb3a8; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 3px; font-family: 'Manrope', sans-serif; font-size: 11px; padding: 6px 14px; border-radius: 10px; cursor: pointer; }
+  .nav-btn.active { color: #4ade80; background: rgba(74,222,128,0.12); }
+  .nav-btn svg { width: 20px; height: 20px; }
+</style>
+</head>
+<body>
+
+<div class="sky sky-malam" id="skyArea">
+  <div class="stars" id="starsEl"></div>
+  <div class="status-pill"><span id="periodeLabel">-</span> <b id="jamLabel">-</b></div>
+  <div class="sun" id="sunEl" style="display:none;"></div>
+  <div class="moon" id="moonEl"></div>
+  <div class="plant-wrap" id="plantVisual"></div>
+</div>
+
+<div class="growth-panel">
+  <div class="stage-track" id="stageTrack"></div>
+  <div class="stage-labels" id="stageLabels"></div>
+
+  <div class="growth-row">
+    <div>
+      <div class="tahap-label">Tahap</div>
+      <div class="tahap-name serif" id="tahapName">...</div>
+      <div class="tahap-desc" id="tahapDesc">...</div>
+    </div>
+    <div class="nutrisi-col">
+      <div class="tahap-label">Nutrisi</div>
+      <div class="nutrisi-val" id="nutrisiVal">-</div>
+    </div>
+    <div class="kesehatan-col">
+      <div class="tahap-label">Kesehatan</div>
+      <div class="dots" id="kesehatanDots"></div>
+      <div class="kesehatan-status" id="kesehatanStatus">-</div>
+    </div>
+  </div>
+
+  <div class="progress-outer">
+    <span class="progress-num" id="milestoneMin">0</span>
+    <div class="progress-bar"><i id="progressFill"></i></div>
+    <span class="progress-num" id="milestoneMax">20</span>
+  </div>
+
+  <div class="next-nutrisi">
+    <span id="tanggalLabel">-</span>
+    <b id="nutrisiInfo">-</b>
+  </div>
+
+  <div class="prayer-times-card" id="prayerTimesCard">
+    <h3 class="serif" style="font-size:14px; margin-bottom:10px;">Jadwal Sholat Hari Ini</h3>
+    <div id="prayerTimesList" class="prayer-times-list">Memuat jadwal...</div>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <a href="tanaman.html" class="nav-btn active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3"/><path d="M12 11v10"/></svg>
+    Tanaman
+  </a>
+  <a href="beranda.html" class="nav-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
+    Beranda
+  </a>
+  <a href="statistik.html" class="nav-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
+    Data Diagram
+  </a>
+  <button type="button" class="nav-btn" id="navMenuBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    Menu
+  </button>
+</nav>
+
+<script>
+  const starsEl = document.getElementById('starsEl');
+  for (let i = 0; i < 30; i++) {
+    const s = document.createElement('span');
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = Math.random() * 70 + '%';
+    s.style.opacity = (0.3 + Math.random() * 0.7).toFixed(2);
+    starsEl.appendChild(s);
+  }
+</script>
+<script src="js/api.js"></script>
+<script src="js/menu-panel.js"></script>
+<script src="js/tanaman.js"></script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Masuk — Tanaman Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="auth-card">
+    <a href="index.html" class="back-link">← Kembali</a>
+    <span class="eyebrow">Selamat Datang Kembali</span>
+    <h1 class="auth-title">Masuk ke <em class="serif">kebunmu</em></h1>
+    <p class="auth-subtitle">Lanjutkan rawat tanamanmu hari ini.</p>
+
+    <div class="error-msg" id="errorBox"></div>
+
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="field-group">
+        <label for="username">ID Pengguna</label>
+        <input type="text" id="username" placeholder="Contoh: 223345" autocomplete="username">
+      </div>
+      <div class="field-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Masukkan password" autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn-primary" id="submitBtn">Masuk</button>
+    </form>
+
+    <p class="switch-link">Belum punya akun? <a href="register.html">Daftar di sini</a></p>
+  </div>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>

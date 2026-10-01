@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riwayat — Tanaman Digital</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Manrope', sans-serif; color: #eaf3ec; padding: 24px 16px 40px; background: linear-gradient(180deg, #16283b 0%, #0a1220 60%, #0d1a15 100%); min-height: 100vh; }
+  .serif { font-family: 'Lora', serif; }
+  .wrap { max-width: 500px; margin: 0 auto; }
+  .back-link { color: #9fb3a8; text-decoration: none; font-size: 13px; display: inline-block; margin-bottom: 16px; }
+  h1 { font-size: 22px; margin-bottom: 4px; }
+  h2 { font-size: 16px; margin: 24px 0 12px; }
+
+  .ach-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ach-card {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px; padding: 14px; text-align: center; opacity: 0.5;
+  }
+  .ach-card.unlocked { opacity: 1; background: rgba(74,222,128,0.08); border-color: rgba(74,222,128,0.3); }
+  .ach-icon { font-size: 26px; margin-bottom: 6px; }
+  .ach-name { font-size: 12.5px; font-weight: 700; margin-bottom: 3px; }
+  .ach-desc { font-size: 10.5px; color: #9fb3a8; line-height: 1.4; }
+
+  .harvest-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: rgba(255,255,255,0.04); border-radius: 10px; margin-bottom: 6px; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="akun.html" class="back-link">← Kembali</a>
+  <h1 class="serif">Riwayat</h1>
+
+  <h2 class="serif">Pencapaian</h2>
+  <div class="ach-grid" id="achList"></div>
+
+  <h2 class="serif">Riwayat Panen</h2>
+  <div id="harvestList"></div>
+</div>
+<script src="js/api.js"></script>
+<script src="js/riwayat.js"></script>
+</body>
+</html>

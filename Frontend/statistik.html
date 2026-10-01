@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Diagram — Tanaman Digital</title>
+<link rel="icon" href="data:,">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600;0,700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/menu-panel.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Manrope', sans-serif; color: #eaf3ec; padding: 20px 16px 80px;
+    background: linear-gradient(180deg, #16283b 0%, #0a1220 60%, #0d1a15 100%);
+    min-height: 100vh;
+  }
+  .serif { font-family: 'Lora', serif; }
+  .wrap { max-width: 560px; margin: 0 auto; }
+
+  .header-title { font-size: 11px; letter-spacing: .1em; color: #9fb3a8; text-transform: uppercase; }
+  .header-main { font-size: 24px; margin: 4px 0 16px; }
+
+  .tabs { display: flex; gap: 8px; margin-bottom: 18px; }
+  .tab-btn {
+    flex: 1; padding: 10px; border-radius: 10px; border: none; cursor: pointer;
+    background: rgba(255,255,255,0.06); color: #9fb3a8; font-family:'Manrope',sans-serif; font-weight: 700; font-size: 13px;
+  }
+  .tab-btn.active { background: #1a3320; color: #4ade80; }
+
+  .summary-row { display: flex; gap: 10px; margin-bottom: 18px; }
+  .summary-card {
+    flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px; padding: 14px; text-align: center;
+  }
+  .summary-card .label { font-size: 10px; letter-spacing: .08em; color: #9fb3a8; text-transform: uppercase; }
+  .summary-card .value { font-size: 22px; font-family: 'Lora', serif; margin: 4px 0 2px; }
+  .summary-card .sub { font-size: 11px; color: #9fb3a8; }
+
+  .card {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; padding: 18px; margin-bottom: 16px;
+  }
+  .card h3 { font-size: 15px; margin-bottom: 2px; }
+  .card .desc { font-size: 11.5px; color: #9fb3a8; margin-bottom: 14px; }
+
+  .ringkasan-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .ringkasan-label { font-size: 12.5px; font-weight: 700; width: 60px; flex-shrink: 0; }
+  .ringkasan-bar-bg { flex: 1; height: 8px; background: rgba(255,255,255,0.08); border-radius: 99px; overflow: hidden; }
+  .ringkasan-bar-fill { height: 100%; border-radius: 99px; transition: width .4s ease; }
+  .ringkasan-num { font-size: 12px; color: #eaf3ec; width: 70px; text-align: right; flex-shrink: 0; }
+  .ringkasan-num small { color: #9fb3a8; }
+
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15,33,25,0.97); backdrop-filter: blur(8px);
+    display: flex; justify-content: space-around; align-items: center; padding: 10px 6px; z-index: 40;
+  }
+  .nav-btn { background: none; border: none; color: #9fb3a8; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 3px; font-family: 'Manrope', sans-serif; font-size: 11px; padding: 6px 14px; border-radius: 10px; cursor: pointer; }
+  .nav-btn.active { color: #4ade80; background: rgba(74,222,128,0.12); }
+  .nav-btn svg { width: 20px; height: 20px; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="header-title">Statistik</div>
+  <h1 class="header-main serif">Data Sholat</h1>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="tabWeekly">Mingguan</button>
+    <button class="tab-btn" id="tabMonthly">Bulanan</button>
+  </div>
+
+  <div class="summary-row">
+    <div class="summary-card">
+      <div class="label">Selesai</div>
+      <div class="value" id="sumSelesai">-</div>
+      <div class="sub" id="sumSelesaiLabel">-</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Persentase</div>
+      <div class="value" id="sumPersen">-</div>
+      <div class="sub">kepatuhan</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Terbaik</div>
+      <div class="value" id="sumTerbaik">-</div>
+      <div class="sub" id="sumTerbaikLabel">-</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 class="serif">Sholat per Periode</h3>
+    <div class="desc">Jumlah sholat yang selesai</div>
+    <canvas id="barChart" height="180"></canvas>
+  </div>
+
+  <div class="card">
+    <h3 class="serif">Tren Kepatuhan Sholat</h3>
+    <div class="desc">Grafik garis per periode</div>
+    <canvas id="lineChart" height="180"></canvas>
+  </div>
+
+  <div class="card">
+    <h3 class="serif">Ringkasan per Sholat</h3>
+    <div class="desc">Persentase penyelesaian tiap jenis ibadah</div>
+    <div id="ringkasanList"></div>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <a href="tanaman.html" class="nav-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3"/><path d="M12 11v10"/></svg>
+    Tanaman
+  </a>
+  <a href="beranda.html" class="nav-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
+    Beranda
+  </a>
+  <a href="statistik.html" class="nav-btn active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
+    Data Diagram
+  </a>
+  <button type="button" class="nav-btn" id="navMenuBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    Menu
+  </button>
+</nav>
+
+<script src="js/api.js"></script>
+<script src="js/statistik.js"></script>
+<script src="js/menu-panel.js"></script>
+</body>
+</html>

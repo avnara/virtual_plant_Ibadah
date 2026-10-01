@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar — Tanaman Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="auth-card">
+    <a href="index.html" class="back-link">← Kembali</a>
+    <span class="eyebrow">Mulai Menanam</span>
+    <h1 class="auth-title">Bikin <em class="serif">kebun</em> pertamamu</h1>
+    <p class="auth-subtitle">Satu akun, satu tanaman yang tumbuh bersamamu.</p>
+
+    <div class="error-msg" id="errorBox"></div>
+
+    <form id="registerForm" onsubmit="handleRegister(event)">
+      <div class="field-group">
+        <label for="username">ID Pengguna</label>
+        <input type="text" id="username" placeholder="Contoh: 223345" autocomplete="username">
+      </div>
+
+      <div class="field-group">
+        <label for="display_name">Nama Tampilan</label>
+        <input type="text" id="display_name" placeholder="Nama yang akan ditampilkan">
+      </div>
+
+      <div class="field-group">
+        <label>Jenis Kelamin</label>
+        <div class="radio-row">
+          <label class="radio-option">
+            <input type="radio" name="gender" value="male"> Laki-laki
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="gender" value="female"> Perempuan
+          </label>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="provinsi">Provinsi</label>
+        <select id="provinsi">
+          <option value="" disabled selected>Pilih provinsi...</option>
+          <option value="aceh">Aceh</option>
+          <option value="sumut">Sumatera Utara</option>
+          <option value="sumbar">Sumatera Barat</option>
+          <option value="riau">Riau</option>
+          <option value="kepri">Kepulauan Riau</option>
+          <option value="jambi">Jambi</option>
+          <option value="sumsel">Sumatera Selatan</option>
+          <option value="bengkulu">Bengkulu</option>
+          <option value="lampung">Lampung</option>
+          <option value="babel">Kepulauan Bangka Belitung</option>
+          <option value="dki">DKI Jakarta</option>
+          <option value="jabar">Jawa Barat</option>
+          <option value="jateng">Jawa Tengah</option>
+          <option value="diy">DI Yogyakarta</option>
+          <option value="jatim">Jawa Timur</option>
+          <option value="banten">Banten</option>
+          <option value="bali">Bali</option>
+          <option value="ntb">Nusa Tenggara Barat</option>
+          <option value="ntt">Nusa Tenggara Timur</option>
+          <option value="kalbar">Kalimantan Barat</option>
+          <option value="kalteng">Kalimantan Tengah</option>
+          <option value="kalsel">Kalimantan Selatan</option>
+          <option value="kaltim">Kalimantan Timur</option>
+          <option value="kaltara">Kalimantan Utara</option>
+          <option value="sulut">Sulawesi Utara</option>
+          <option value="sulteng">Sulawesi Tengah</option>
+          <option value="sulsel">Sulawesi Selatan</option>
+          <option value="sultra">Sulawesi Tenggara</option>
+          <option value="gorontalo">Gorontalo</option>
+          <option value="sulbar">Sulawesi Barat</option>
+          <option value="maluku">Maluku</option>
+          <option value="malut">Maluku Utara</option>
+          <option value="papua">Papua</option>
+          <option value="papbar">Papua Barat</option>
+          <option value="papsel">Papua Selatan</option>
+          <option value="paptgh">Papua Tengah</option>
+          <option value="pappeg">Papua Pegunungan</option>
+          <option value="papbrd">Papua Barat Daya</option>
+        </select>
+      </div>
+
+      <div class="field-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Minimal 8 karakter" autocomplete="new-password">
+      </div>
+
+      <div class="field-group" style="display:flex; align-items:flex-start; gap:10px;">
+        <input type="checkbox" id="agreeTerms" style="width:auto; margin-top:3px;">
+        <label for="agreeTerms" style="font-size:12.5px; font-weight:400; color:#6b7d70; line-height:1.5;">
+          Saya menyetujui
+          <a href="terms.html" target="_blank" style="color:#2f6b46; font-weight:600;">Syarat & Ketentuan</a>
+          dan
+          <a href="privacy.html" target="_blank" style="color:#2f6b46; font-weight:600;">Kebijakan Privasi</a>
+          yang berlaku.
+        </label>
+      </div>
+
+      <button type="submit" class="btn-primary" id="submitBtn">Daftar Akun Baru</button>
+    </form>
+
+    <p class="switch-link">Sudah punya akun? <a href="login.html">Masuk di sini</a></p>
+  </div>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beranda — Tanaman Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/achievement-modal.css">
+  <link rel="stylesheet" href="css/menu-panel.css">
+  <style>
+    body { padding-bottom: 70px; }
+
+    .dash-wrap {
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 32px;
+      max-width: 480px;
+      width: 100%;
+    }
+    .dash-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
+    .stat-row { display:flex; gap:12px; margin:20px 0; }
+    .stat-box { flex:1; background:#f3f7f4; border-radius:12px; padding:14px; text-align:center; }
+    .stat-box b { display:block; font-size:20px; font-family:'Lora',serif; color:#1a3320; }
+    .stat-box span { font-size:11px; color:#6b7d70; }
+    .logout-btn { background:none; border:none; color:#b3261e; font-size:13px; cursor:pointer; }
+
+    .misi-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 14px; border-radius: 12px; margin-bottom: 8px;
+      border-left: 4px solid #d8e0dc;
+    }
+    .misi-item.abu { background: #f3f4f3; border-left-color: #9fb3a8; }
+    .misi-item.hijau { background: #eaf6ee; border-left-color: #2f9a58; }
+    .misi-item.merah { background: #fdecec; border-left-color: #b3261e; }
+    .misi-name { font-weight: 700; font-size: 14px; }
+    .misi-time { font-size: 11px; color: #6b7d70; }
+    .misi-actions button {
+      border: none; border-radius: 8px; padding: 6px 14px; font-size: 12px; font-weight: 700; cursor: pointer; margin-left: 6px;
+    }
+    .btn-ya { background: #2f9a58; color: #fff; }
+    .btn-tidak { background: #e5e5e5; color: #444; }
+    .misi-actions button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5); display: none;
+      justify-content: center; align-items: center; z-index: 1000;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-box {
+      background: #fff; padding: 24px; border-radius: 16px; max-width: 320px; width: 90%; text-align:center;
+    }
+    .modal-box h3 { font-family:'Lora',serif; margin-bottom:12px; }
+    .modal-sub { font-size:13px; color:#6b7d70; margin-bottom:16px; }
+    .alasan-options { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+    .alasan-btn {
+      padding: 12px; border: 1px solid #d8e0dc; border-radius: 10px; background:#fafcfb;
+      font-family: 'Manrope', sans-serif; font-size: 14px; cursor: pointer; text-align: left;
+    }
+    .alasan-btn:hover { border-color: #2f6b46; background: #eaf6ee; }
+    .cancel-btn {
+      width: 100%; padding: 10px; background: none; border: none; color: #6b7d70; font-size: 13px; cursor: pointer;
+    }
+
+    .dalil-toast {
+      display: none; position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+      background: #1a3320; color: #fff; padding: 14px 20px; border-radius: 12px; max-width: 320px;
+      font-size: 13px; z-index: 60; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .dalil-toast.show { display: block; }
+
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: rgba(20,40,25,0.95); backdrop-filter: blur(8px);
+      display: flex; justify-content: space-around; align-items: center;
+      padding: 10px 6px; z-index: 40;
+    }
+    .nav-btn {
+      background: none; border: none; color: #9fb3a8; text-decoration: none;
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      font-family: 'Manrope', sans-serif; font-size: 11px; cursor: pointer;
+      padding: 6px 14px; border-radius: 10px;
+    }
+    .nav-btn.active { color: #4ade80; background: rgba(74,222,128,0.12); }
+    .nav-btn svg { width: 20px; height: 20px; }
+  </style>
+</head>
+<body>
+  <div class="dash-wrap">
+    <div class="dash-header">
+      <div>
+        <div style="font-size:12px; color:#6b7d70;">Selamat datang,</div>
+        <div style="font-size:20px; font-weight:700;" id="userName">...</div>
+      </div>
+      <button class="logout-btn" onclick="logout()">Keluar</button>
+    </div>
+
+    <h2 class="serif" id="tahapLabel">...</h2>
+
+    <div class="stat-row">
+      <div class="stat-box"><b id="poinNutrisi">-</b><span>Poin Nutrisi</span></div>
+      <div class="stat-box"><b id="hariBerjalan">-</b><span>Hari Berjalan</span></div>
+      <div class="stat-box"><b id="totalPanen">-</b><span>Total Panen</span></div>
+    </div>
+
+    <button class="btn-primary" id="harvestBtn" disabled>Memuat...</button>
+
+    <div class="misi-section">
+      <h3 class="serif" style="margin: 24px 0 12px;">Misi Hari Ini</h3>
+      <div id="misiList"></div>
+    </div>
+  </div>
+
+  <!-- Modal alasan tidak sholat -->
+  <div class="modal-overlay" id="alasanModal">
+    <div class="modal-box">
+      <h3 class="serif">Kenapa belum sempat?</h3>
+      <p class="modal-sub" id="modalMissionName"></p>
+      <div class="alasan-options" id="alasanOptions">
+        <button class="alasan-btn" data-alasan="sibuk">Sibuk</button>
+        <button class="alasan-btn" data-alasan="lupa">Lupa</button>
+        <button class="alasan-btn" data-alasan="haid" id="haidBtn" style="display:none;">Haid</button>
+      </div>
+      <button class="cancel-btn" onclick="closeModal()">Batal</button>
+    </div>
+  </div>
+
+  <div class="dalil-toast" id="dalilToast"></div>
+
+  <nav class="bottom-nav">
+    <a href="tanaman.html" class="nav-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3"/><path d="M12 11v10"/></svg>
+      Tanaman
+    </a>
+    <a href="beranda.html" class="nav-btn active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
+      Beranda
+    </a>
+    <a href="statistik.html" class="nav-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
+      Data Diagram
+    </a>
+   <button type="button" class="nav-btn" id="navMenuBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    Menu
+   </button>
+  </nav>
+
+  <script src="js/api.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/achievement-modal.js"></script>
+  <script src="js/missions.js"></script>
+  <script src="js/menu-panel.js"></script>
+</body>
+</html>
